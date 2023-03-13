@@ -1,0 +1,25 @@
+{
+  "name": "dds-js",
+  "version": "1.0.0",
+  "description": "Distributed Data Structure library",
+  "main": "dds.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burgrp/dds-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/burgrp/dds-js/issues"
+  },
+  "homepage": "https://github.com/burgrp/dds-js#readme",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
+  "dependencies": {
+    "ipaddr.js": "^2.0.1"
+  }
+}
