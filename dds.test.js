@@ -26,7 +26,7 @@ test('Address to string', () => {
 
 test('Single register', done => {
 
-  dds.useRegister('test.1', (value, metadata) => {
+  dds.useEntry('test.1', (value, metadata) => {
     try {
       assert.equal(value, 1);
       done();
@@ -35,7 +35,7 @@ test('Single register', done => {
     }
   });
 
-  provided = dds.provideRegister('test.1', {
+  provided = dds.createEntry({
     name: 'test.1',
     getValue: async () => 1,
     getMetadata: async () => { }

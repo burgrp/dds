@@ -1,9 +1,9 @@
 const ipaddr = require("ipaddr.js");
-
-// Maps key hash to socket
-let sockets = {};
+const dgram = require('dgram');
 
 let addressPrefix = [0xFF, 0x12, 0, 0, 0, 0, 0, 0, 0, 0, 0xDD, 0x88];
+
+let portNumber = 2657;
 
 function hashString(str) {
     let hash = 0;
@@ -26,13 +26,53 @@ function addressToString(address) {
     return ip.toString().toUpperCase();
 }
 
-function useRegister(name, callback) {
-    callback(1, {});
+function useEntry(name, callback) {
+
+    let address = keyToAddress(name);
+
+    let socket = dgram.createSocket({type:'udp6', reuseAddr: true, ipv6Only: true });
+
+    socket.on('error', (err) => {
+        console.error(`server error:\n${err.stack}`);
+        socket.close();
+    });
+
+    socket.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+        callback(1, {});
+    });
+
+    socket.bind(portNumber, () => {
+        console.log('Listening');
+        socket.addMembership(addressToString(address));
+
+    });
+
 }
 
-function provideRegister({ name, getValue, getMetadata }) {
+function createEntry({ name, getValue, getMetadata }) {
+
+    let address = keyToAddress(name);
+
+    let socket = dgram.createSocket('udp6');
+
+    socket.on('error', (err) => {
+        console.error(`server error:\n${err.stack}`);
+        socket.close();
+    });
+
+    socket.on('message', (msg, rinfo) => {
+        console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+    });
+
+    socket.send(Buffer.from('test'), portNumber, addressToString(address), (err) => {
+        if (err) {
+            console.error('send error:', err);
+        }
+        socket.close();
+    });
 
 }
 
 
-module.exports = { addressBase: addressPrefix, hashString, keyToAddress, addressToString, useRegister, provideRegister }
+module.exports = { addressBase: addressPrefix, hashString, keyToAddress, addressToString, useEntry, createEntry }
